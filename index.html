@@ -150,6 +150,7 @@
             </div>
         </div>
 
+        <!-- Sección de Almuerzos -->
         <div class="section-title" onclick="toggleSection('almuerzos')">Almuerzos</div>
         <div id="almuerzos" class="section-content">
             <div class="producto" data-id="5">
@@ -206,6 +207,7 @@
             <!-- Los productos del carrito se agregarán aquí -->
         </ul>
         <button id="confirmarPedido" onclick="confirmarPedido()">Confirmar Pedido</button>
+        <button onclick="borrarDatos()">Borrar Todos los Datos</button>
     </section>
 
     <section id="pedidos">
@@ -238,6 +240,7 @@
 
         let cuentas = JSON.parse(localStorage.getItem('cuentas')) || [];
 
+        // Función para mostrar u ocultar las secciones del menú
         function toggleSection(sectionId) {
             const section = document.getElementById(sectionId);
             section.style.display = (section.style.display === "none" || section.style.display === "") ? "block" : "none";
@@ -256,7 +259,7 @@
             let cuenta = cuentas.find(c => c.nombre === clienteNombre);
 
             if (!cuenta) {
-                cuenta = { nombre: clienteNombre, productos: [] };
+                cuenta = { nombre: clienteNombre, productos: [], fecha: new Date().toLocaleString() };
                 cuentas.push(cuenta);
             }
 
@@ -301,11 +304,21 @@
             let total = 0;
             cuenta.productos.forEach(item => total += item.precio);
 
-            alert(`Pedido confirmado para ${clienteNombre}. Total: Q${total.toFixed(2)}`);
+            alert(`Pedido confirmado para ${clienteNombre} en ${cuenta.fecha}. Total: Q${total.toFixed(2)}`);
             cuenta.productos = [];
             localStorage.setItem('cuentas', JSON.stringify(cuentas));
 
             mostrarCarrito();
+        }
+
+        // Función para borrar todos los datos de los clientes
+        function borrarDatos() {
+            if (confirm("¿Estás seguro de que quieres borrar todos los datos de clientes?")) {
+                localStorage.removeItem('cuentas');
+                cuentas = [];
+                alert("Todos los datos han sido borrados.");
+                mostrarCarrito();
+            }
         }
 
         // Función para ver todos los pedidos
@@ -315,7 +328,7 @@
 
             cuentas.forEach(cuenta => {
                 const li = document.createElement('li');
-                li.textContent = `${cuenta.nombre}: ${cuenta.productos.map(p => p.nombre).join(', ')}`;
+                li.textContent = `${cuenta.nombre} (Fecha: ${cuenta.fecha}): ${cuenta.productos.map(p => p.nombre).join(', ')}`;
                 listaPedidos.appendChild(li);
             });
         }
