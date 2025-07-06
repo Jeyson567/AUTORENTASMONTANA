@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurante</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        #menu {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        #menu .producto {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px;
+            width: 200px;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #menu .producto button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #carrito {
+            background-color: #fff;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            width: 90%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #lista-carrito {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #lista-carrito li {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        button {
+            cursor: pointer;
+            font-size: 16px;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /* Responsividad */
+        @media screen and (max-width: 600px) {
+            #menu {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            #menu .producto {
+                width: 80%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Menú del Restaurante</h1>
+    </header>
+
+    <section id="menu">
+        <!-- Los productos se mostrarán aquí -->
+    </section>
+
+    <section id="carrito">
+        <h2>Carrito de Pedidos</h2>
+        <ul id="lista-carrito">
+            <!-- Los productos del carrito se agregarán aquí -->
+        </ul>
+        <button id="confirmarPedido">Confirmar Pedido</button>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Restaurante</p>
+    </footer>
+
+    <script>
+        // Productos del menú
+        const menu = [
+            { id: 1, nombre: 'Pizza', precio: 50 },
+            { id: 2, nombre: 'Hamburguesa', precio: 30 },
+            { id: 3, nombre: 'Ensalada', precio: 20 },
+            { id: 4, nombre: 'Sopa', precio: 15 },
+            { id: 5, nombre: 'Bebida', precio: 10 }
+        ];
+
+        // Mostrar el menú en la página
+        const menuDiv = document.getElementById('menu');
+        menu.forEach(producto => {
+            const div = document.createElement('div');
+            div.classList.add('producto');
+            div.innerHTML = `
+                <h3>${producto.nombre}</h3>
+                <p>Precio: $${producto.precio}</p>
+                <button onclick="agregarAlCarrito(${producto.id})">Agregar al Carrito</button>
+            `;
+            menuDiv.appendChild(div);
+        });
+
+        // Crear o recuperar la cuenta actual desde Local Storage
+        let cuenta = JSON.parse(localStorage.getItem('cuenta')) || { productos: [], id: Date.now() };
+
+        // Función para agregar un producto al carrito (cuenta)
+        function agregarAlCarrito(idProducto) {
+            const producto = menu.find(item => item.id === idProducto);
+            cuenta.productos.push(producto);
+
+            // Guardar la cuenta en el Local Storage
+            localStorage.setItem('cuenta', JSON.stringify(cuenta));
+
+            mostrarCarrito();
+        }
+
+        // Función para mostrar el carrito (productos del pedido) en la página
+        function mostrarCarrito() {
+            const listaCarrito = document.getElementById('lista-carrito');
+            listaCarrito.innerHTML = ''; // Limpiar el carrito antes de mostrarlo
+            cuenta.productos.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = `${item.nombre} - $${item.precio}`;
+                listaCarrito.appendChild(li);
+            });
+        }
+
+        // Confirmar pedido y finalizar cuenta
+        const confirmarPedidoBtn = document.getElementById('confirmarPedido');
+        confirmarPedidoBtn.addEventListener('click', () => {
+            if (cuenta.productos.length > 0) {
+                let total = 0;
+                cuenta.productos.forEach(item => total += item.precio);
+                alert(`Pedido confirmado. Total: $${total}`);
+
+                // Limpiar la cuenta después de confirmar
+                cuenta = { productos: [], id: Date.now() };
+                localStorage.removeItem('cuenta');  // Borrar la cuenta del Local Storage
+                mostrarCarrito(); // Actualizar la vista del carrito
+            } else {
+                alert('Tu carrito está vacío.');
+            }
+        });
+
+        // Recuperar la cuenta cuando la página se carga
+        window.onload = function() {
+            const cuentaGuardada = JSON.parse(localStorage.getItem('cuenta'));
+            if (cuentaGuardada) {
+                cuenta = cuentaGuardada;
+                mostrarCarrito();
+            }
+        }
+    </script>
+
+</body>
+</html>
