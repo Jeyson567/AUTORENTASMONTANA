@@ -25,12 +25,19 @@
 
         #menu {
             display: flex;
-            flex-wrap: wrap;
+            flex-direction: column;
             justify-content: center;
             padding: 20px;
+            margin: 10px;
         }
 
-        #menu .producto {
+        .section-title {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #007bff;
+        }
+
+        .producto {
             background-color: #fff;
             border: 1px solid #ddd;
             padding: 10px;
@@ -41,7 +48,7 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
-        #menu .producto button {
+        .producto button {
             background-color: #28a745;
             color: white;
             border: none;
@@ -100,7 +107,7 @@
                 align-items: center;
             }
             
-            #menu .producto {
+            .producto {
                 width: 80%;
             }
         }
@@ -113,19 +120,90 @@
     </header>
 
     <section id="menu">
-        <!-- Los productos se mostrarán aquí -->
+        <!-- Sección de Desayunos/Cenas -->
+        <div class="section">
+            <div class="section-title">Desayunos/Cenas</div>
+            <div class="producto" data-id="1">
+                <h3>Omelette Supremo</h3>
+                <p>Q75.00</p>
+                <button onclick="agregarAlCarrito(1)">Agregar al Carrito</button>
+            </div>
+            <div class="producto" data-id="2">
+                <h3>Omelette Jamón y Queso</h3>
+                <p>Q50.00</p>
+                <button onclick="agregarAlCarrito(2)">Agregar al Carrito</button>
+            </div>
+            <div class="producto" data-id="3">
+                <h3>Huevos Gratinados a la Montaña</h3>
+                <p>Q70.00</p>
+                <button onclick="agregarAlCarrito(3)">Agregar al Carrito</button>
+            </div>
+            <div class="producto" data-id="4">
+                <h3>Poptún Finquero</h3>
+                <p>Q90.00</p>
+                <button onclick="agregarAlCarrito(4)">Agregar al Carrito</button>
+            </div>
+        </div>
+
+        <!-- Sección de Almuerzos -->
+        <div class="section">
+            <div class="section-title">Almuerzos</div>
+            <div class="producto" data-id="5">
+                <h3>Desayuno de la Casa</h3>
+                <p>Q50.00</p>
+                <button onclick="agregarAlCarrito(5)">Agregar al Carrito</button>
+            </div>
+            <div class="producto" data-id="6">
+                <h3>Chilaquiles Montaña</h3>
+                <p>Q65.00</p>
+                <button onclick="agregarAlCarrito(6)">Agregar al Carrito</button>
+            </div>
+        </div>
+
+        <!-- Sección de Bebidas -->
+        <div class="section">
+            <div class="section-title">Bebidas</div>
+            <div class="producto" data-id="37">
+                <h3>Pichel de Horchata</h3>
+                <p>Q60.00</p>
+                <button onclick="agregarAlCarrito(37)">Agregar al Carrito</button>
+            </div>
+            <div class="producto" data-id="38">
+                <h3>Pichel de Jamaica</h3>
+                <p>Q60.00</p>
+                <button onclick="agregarAlCarrito(38)">Agregar al Carrito</button>
+            </div>
+            <div class="producto" data-id="39">
+                <h3>Naranja con Soda/Agua</h3>
+                <p>Q25.00</p>
+                <button onclick="agregarAlCarrito(39)">Agregar al Carrito</button>
+            </div>
+        </div>
+
+        <!-- Sección de Postres -->
+        <div class="section">
+            <div class="section-title">Postres</div>
+            <div class="producto" data-id="33">
+                <h3>Crepas</h3>
+                <p>Q50.00</p>
+                <button onclick="agregarAlCarrito(33)">Agregar al Carrito</button>
+            </div>
+            <div class="producto" data-id="34">
+                <h3>Mosaico de la Casa</h3>
+                <p>Q35.00</p>
+                <button onclick="agregarAlCarrito(34)">Agregar al Carrito</button>
+            </div>
+        </div>
     </section>
 
     <section id="carrito">
         <h2>Carrito de Pedidos</h2>
-        <label for="cliente">Selecciona el Cliente:</label>
-        <select id="cliente" onchange="cargarCuentaCliente()">
-            <option value="">Selecciona un Cliente</option>
-        </select>
+        <label for="cliente">Nombre del Cliente:</label>
+        <input type="text" id="clienteNombre" placeholder="Ingresa el nombre del cliente">
         <ul id="lista-carrito">
             <!-- Los productos del carrito se agregarán aquí -->
         </ul>
-        <button id="confirmarPedido">Confirmar Pedido</button>
+        <button id="confirmarPedido" onclick="confirmarPedido()">Confirmar Pedido</button>
     </section>
 
     <!-- Nueva sección para ver todos los pedidos -->
@@ -142,7 +220,7 @@
     </footer>
 
     <script>
-        // Menú personalizado de productos (Reemplazado por el menú que proporcionaste)
+        // Menú personalizado de productos
         const menu = [
             { id: 1, nombre: 'Omelette Supremo', precio: 75.00 },
             { id: 2, nombre: 'Omelette Jamón y Queso', precio: 50.00 },
@@ -150,80 +228,92 @@
             { id: 4, nombre: 'Poptún Finquero', precio: 90.00 },
             { id: 5, nombre: 'Desayuno de la Casa', precio: 50.00 },
             { id: 6, nombre: 'Chilaquiles Montaña', precio: 65.00 },
-            { id: 7, nombre: 'Huevos Ahogados', precio: 50.00 },
-            { id: 8, nombre: 'Panqueques', precio: 50.00 },
-            { id: 9, nombre: 'Waffles', precio: 45.00 },
-            { id: 10, nombre: 'Tostadas Francesas', precio: 50.00 },
-            { id: 11, nombre: 'Ensalada de Frutas', precio: 50.00 },
-            { id: 12, nombre: 'Copa del Rey', precio: 35.00 },
-            { id: 13, nombre: 'Huevos al Albañil', precio: 60.00 },
-            { id: 14, nombre: 'Tomahawk 1LB', precio: 210.00 },
-            { id: 15, nombre: 'Ribeye Steak 1LB', precio: 195.00 },
-            { id: 16, nombre: 'Cowboy Steak 1LB', precio: 198.00 },
-            { id: 17, nombre: 'Puyazo 1/2LB', precio: 120.00 },
-            { id: 18, nombre: 'Lomito 1/2LB', precio: 120.00 },
-            { id: 19, nombre: 'Costilla Asada 1/2LB', precio: 90.00 },
-            { id: 20, nombre: 'Costilla en BBQ 1/2LB', precio: 95.00 },
-            { id: 21, nombre: 'Pollo Asado (Pierna Cuadril)', precio: 80.00 },
-            { id: 22, nombre: 'Caldo de Res', precio: 75.00 },
-            { id: 23, nombre: 'Mojarra Frita', precio: 100.00 },
-            { id: 24, nombre: 'Camarones 1LB', precio: 175.00 },
-            { id: 25, nombre: 'Pasta Alfredo con Camarón', precio: 80.00 },
-            { id: 26, nombre: 'Lasagna de Res', precio: 90.00 },
-            { id: 27, nombre: 'Tacos de Res (4 tacos con costra de queso)', precio: 50.00 },
-            { id: 28, nombre: 'Tacos de Birria', precio: 50.00 },
-            { id: 29, nombre: 'Tacos de Cochinilla', precio: 50.00 },
-            { id: 30, nombre: 'Hamburguesa Steak', precio: 60.00 },
-            { id: 31, nombre: 'Sandwich Clásico', precio: 45.00 },
-            { id: 32, nombre: 'Nachos Supremos', precio: 80.00 },
-            { id: 33, nombre: 'Crepas', precio: 50.00 },
-            { id: 34, nombre: 'Mosaico de la Casa', precio: 35.00 },
-            { id: 35, nombre: 'Pera Horneada', precio: 35.00 },
-            { id: 36, nombre: 'Copa de Helado', precio: 35.00 },
             { id: 37, nombre: 'Pichel de Horchata', precio: 60.00 },
             { id: 38, nombre: 'Pichel de Jamaica', precio: 60.00 },
             { id: 39, nombre: 'Naranja con Soda/Agua', precio: 25.00 },
-            { id: 40, nombre: 'Limonada con Soda/Agua', precio: 25.00 },
-            { id: 41, nombre: 'Berry de Fresa', precio: 35.00 },
-            { id: 42, nombre: 'Frappe', precio: 40.00 },
-            { id: 43, nombre: 'Smoothie', precio: 40.00 },
-            { id: 44, nombre: 'Gaseosa', precio: 15.00 },
-            { id: 45, nombre: 'Agua Pura', precio: 10.00 },
-            { id: 46, nombre: 'Café/Con Leche', precio: 12.00 },
-            { id: 47, nombre: 'Chocolate Agua/Leche', precio: 20.00 },
-            { id: 48, nombre: 'Té', precio: 15.00 },
-            { id: 49, nombre: 'Cerveza Gallo', precio: 25.00 },
-            { id: 50, nombre: 'Piña Colada', precio: 50.00 },
-            { id: 51, nombre: 'Mojito Cubano', precio: 50.00 },
-            { id: 52, nombre: 'Daiquiri', precio: 50.00 },
-            { id: 53, nombre: 'Margarita', precio: 50.00 },
-            { id: 54, nombre: 'Churrasco de Res', precio: 70.00 },
-            { id: 55, nombre: 'Caldo de Res', precio: 65.00 },
-            { id: 56, nombre: 'Espagueti a la Boloñesa', precio: 60.00 },
-            { id: 57, nombre: 'Sandwich Jamón y Queso', precio: 35.00 },
-            { id: 58, nombre: 'Pollo Asado', precio: 65.00 },
-            { id: 59, nombre: 'Desayuno/Cena', precio: 40.00 },
+            { id: 33, nombre: 'Crepas', precio: 50.00 },
+            { id: 34, nombre: 'Mosaico de la Casa', precio: 35.00 }
         ];
 
-        // Mostrar el menú en la página
-        const menuDiv = document.getElementById('menu');
-        menu.forEach(producto => {
-            const div = document.createElement('div');
-            div.classList.add('producto');
-            div.innerHTML = `
-                <h3>${producto.nombre}</h3>
-                <p>Precio: Q${producto.precio}</p>
-                <button onclick="agregarAlCarrito(${producto.id})">Agregar al Carrito</button>
-            `;
-            menuDiv.appendChild(div);
-        });
-
-        // El resto del código se mantiene igual
         let cuentas = JSON.parse(localStorage.getItem('cuentas')) || [];
-        let cuentaActiva = null;
 
-        // Funciones de agregar al carrito y demás
-        // (El resto de las funciones y lógica permanecen igual)
+        // Función para agregar productos al carrito
+        function agregarAlCarrito(idProducto) {
+            const producto = menu.find(item => item.id === idProducto);
+            const clienteNombre = document.getElementById('clienteNombre').value.trim();
+
+            if (!clienteNombre) {
+                alert("Por favor, ingresa el nombre del cliente.");
+                return;
+            }
+
+            let cuenta = cuentas.find(c => c.nombre === clienteNombre);
+
+            if (!cuenta) {
+                cuenta = { nombre: clienteNombre, productos: [] };
+                cuentas.push(cuenta);
+            }
+
+            cuenta.productos.push(producto);
+            localStorage.setItem('cuentas', JSON.stringify(cuentas));
+
+            mostrarCarrito();
+        }
+
+        // Función para mostrar el carrito de un cliente
+        function mostrarCarrito() {
+            const listaCarrito = document.getElementById('lista-carrito');
+            listaCarrito.innerHTML = '';
+            const clienteNombre = document.getElementById('clienteNombre').value.trim();
+
+            if (!clienteNombre) return;
+
+            const cuenta = cuentas.find(c => c.nombre === clienteNombre);
+            if (!cuenta) return;
+
+            cuenta.productos.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = `${item.nombre} - Q${item.precio}`;
+                listaCarrito.appendChild(li);
+            });
+        }
+
+        // Función para confirmar el pedido
+        function confirmarPedido() {
+            const clienteNombre = document.getElementById('clienteNombre').value.trim();
+            if (!clienteNombre) {
+                alert("Por favor, ingresa el nombre del cliente.");
+                return;
+            }
+
+            const cuenta = cuentas.find(c => c.nombre === clienteNombre);
+            if (!cuenta || cuenta.productos.length === 0) {
+                alert("El carrito está vacío.");
+                return;
+            }
+
+            let total = 0;
+            cuenta.productos.forEach(item => total += item.precio);
+
+            alert(`Pedido confirmado para ${clienteNombre}. Total: Q${total.toFixed(2)}`);
+            cuenta.productos = [];
+            localStorage.setItem('cuentas', JSON.stringify(cuentas));
+
+            mostrarCarrito();
+        }
+
+        // Función para ver todos los pedidos
+        function verPedidos() {
+            const listaPedidos = document.getElementById('lista-pedidos');
+            listaPedidos.innerHTML = '';
+
+            cuentas.forEach(cuenta => {
+                const li = document.createElement('li');
+                li.textContent = `${cuenta.nombre}: ${cuenta.productos.map(p => p.nombre).join(', ')}`;
+                listaPedidos.appendChild(li);
+            });
+        }
+
     </script>
 
 </body>
