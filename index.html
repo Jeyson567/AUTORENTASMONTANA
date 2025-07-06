@@ -50,7 +50,7 @@
             border-radius: 5px;
         }
 
-        #carrito {
+        #carrito, #pedidos {
             background-color: #fff;
             padding: 20px;
             margin-top: 20px;
@@ -63,12 +63,12 @@
             margin-right: auto;
         }
 
-        #lista-carrito {
+        #lista-carrito, #lista-pedidos {
             list-style-type: none;
             padding: 0;
         }
 
-        #lista-carrito li {
+        #lista-carrito li, #lista-pedidos li {
             padding: 8px;
             border-bottom: 1px solid #ddd;
         }
@@ -118,10 +118,23 @@
 
     <section id="carrito">
         <h2>Carrito de Pedidos</h2>
+        <label for="cliente">Selecciona el Cliente:</label>
+        <select id="cliente" onchange="cargarCuentaCliente()">
+            <option value="">Selecciona un Cliente</option>
+        </select>
         <ul id="lista-carrito">
             <!-- Los productos del carrito se agregarán aquí -->
         </ul>
         <button id="confirmarPedido">Confirmar Pedido</button>
+    </section>
+
+    <!-- Nueva sección para ver todos los pedidos -->
+    <section id="pedidos">
+        <h2>Ver Pedidos</h2>
+        <ul id="lista-pedidos">
+            <!-- Los pedidos de todos los clientes se mostrarán aquí -->
+        </ul>
+        <button onclick="verPedidos()">Ver Todos los Pedidos</button>
     </section>
 
     <footer>
@@ -151,24 +164,37 @@
             menuDiv.appendChild(div);
         });
 
-        // Crear o recuperar la cuenta actual desde Local Storage
-        let cuenta = JSON.parse(localStorage.getItem('cuenta')) || { productos: [], id: Date.now() };
+        // Recuperar cuentas de clientes desde el Local Storage
+        let cuentas = JSON.parse(localStorage.getItem('cuentas')) || [];
 
-        // Función para agregar un producto al carrito (cuenta)
+        // Función para agregar un producto al carrito de la cuenta
         function agregarAlCarrito(idProducto) {
+            const clienteId = document.getElementById('cliente').value;
             const producto = menu.find(item => item.id === idProducto);
+
+            // Si no hay cliente seleccionado, no se puede agregar al carrito
+            if (!clienteId) {
+                alert("Por favor, selecciona un cliente.");
+                return;
+            }
+
+            // Buscar la cuenta del cliente seleccionado
+            const cuenta = cuentas.find(cuenta => cuenta.id === parseInt(clienteId));
             cuenta.productos.push(producto);
 
-            // Guardar la cuenta en el Local Storage
-            localStorage.setItem('cuenta', JSON.stringify(cuenta));
+            // Guardar las cuentas actualizadas en Local Storage
+            localStorage.setItem('cuentas', JSON.stringify(cuentas));
 
             mostrarCarrito();
         }
 
-        // Función para mostrar el carrito (productos del pedido) en la página
+        // Mostrar el carrito (productos del pedido) en la página
         function mostrarCarrito() {
             const listaCarrito = document.getElementById('lista-carrito');
             listaCarrito.innerHTML = ''; // Limpiar el carrito antes de mostrarlo
+            const clienteId = document.getElementById('cliente').value;
+            const cuenta = cuentas.find(cuenta => cuenta.id === parseInt(clienteId));
+
             cuenta.productos.forEach(item => {
                 const li = document.createElement('li');
                 li.textContent = `${item.nombre} - $${item.precio}`;
@@ -179,27 +205,79 @@
         // Confirmar pedido y finalizar cuenta
         const confirmarPedidoBtn = document.getElementById('confirmarPedido');
         confirmarPedidoBtn.addEventListener('click', () => {
+            const clienteId = document.getElementById('cliente').value;
+            const cuenta = cuentas.find(cuenta => cuenta.id === parseInt(clienteId));
+
             if (cuenta.productos.length > 0) {
                 let total = 0;
                 cuenta.productos.forEach(item => total += item.precio);
-                alert(`Pedido confirmado. Total: $${total}`);
+                alert(`Pedido confirmado para ${cuenta.nombre}. Total: $${total}`);
 
                 // Limpiar la cuenta después de confirmar
-                cuenta = { productos: [], id: Date.now() };
-                localStorage.removeItem('cuenta');  // Borrar la cuenta del Local Storage
-                mostrarCarrito(); // Actualizar la vista del carrito
+                cuenta.productos = [];
+                localStorage.setItem('cuentas', JSON.stringify(cuentas));
+                mostrarCarrito();
             } else {
-                alert('Tu carrito está vacío.');
+                alert('El carrito está vacío.');
             }
         });
 
-        // Recuperar la cuenta cuando la página se carga
+        // Cargar las cuentas de clientes cuando la página se carga
         window.onload = function() {
-            const cuentaGuardada = JSON.parse(localStorage.getItem('cuenta'));
-            if (cuentaGuardada) {
-                cuenta = cuentaGuardada;
-                mostrarCarrito();
-            }
+            cargarClientes();
+        }
+
+        // Función para cargar los clientes en el desplegable
+        function cargarClientes() {
+            const selectCliente = document.getElementById('cliente');
+            selectCliente.innerHTML = '<option value="">Selecciona un Cliente</option>'; // Reiniciar el select
+            cuentas.forEach(cuenta => {
+                const option = document.createElement('option');
+                option.value = cuenta.id;
+                option.textContent = cuenta.nombre;
+                selectCliente.appendChild(option);
+            });
+        }
+
+        // Función para cargar la cuenta del cliente seleccionado
+        function cargarCuentaCliente() {
+            const clienteId = document.getElementById('cliente').value;
+            if (!clienteId) return;
+
+            const cuenta = cuentas.find(cuenta => cuenta.id === parseInt(clienteId));
+            if (!cuenta) return;
+
+            mostrarCarrito();
+        }
+
+        // Función para ver todos los pedidos de todos los clientes
+        function verPedidos() {
+            const listaPedidos = document.getElementById('lista-pedidos');
+            listaPedidos.innerHTML = ''; // Limpiar la lista antes de mostrarla
+
+            cuentas.forEach(cuenta => {
+                const li = document.createElement('li');
+                li.textContent = `Pedido de ${cuenta.nombre}: ${cuenta.productos.map(item => item.nombre).join(', ')}`;
+                listaPedidos.appendChild(li);
+            });
+        }
+
+        // Agregar un nuevo cliente (por ejemplo, un nuevo pedido)
+        function agregarNuevoCliente(nombreCliente) {
+            const nuevaCuenta = {
+                id: Date.now(),
+                nombre: nombreCliente,
+                productos: []
+            };
+            cuentas.push(nuevaCuenta);
+            localStorage.setItem('cuentas', JSON.stringify(cuentas));
+            cargarClientes(); // Actualiza la lista de clientes
+        }
+
+        // Ejemplo de agregar clientes al cargar la página (esto puedes hacerlo desde un formulario en la app)
+        if (cuentas.length === 0) {
+            agregarNuevoCliente("Cliente 1");
+            agregarNuevoCliente("Cliente 2");
         }
     </script>
 
