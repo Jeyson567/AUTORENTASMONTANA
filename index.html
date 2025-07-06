@@ -35,6 +35,7 @@
             font-size: 24px;
             margin-bottom: 10px;
             color: #007bff;
+            cursor: pointer;
         }
 
         .producto {
@@ -111,6 +112,10 @@
                 width: 80%;
             }
         }
+
+        .section-content {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -120,9 +125,9 @@
     </header>
 
     <section id="menu">
-        <!-- Sección de Desayunos/Cenas -->
-        <div class="section">
-            <div class="section-title">Desayunos/Cenas</div>
+        <!-- Botones para mostrar las categorías de productos -->
+        <div class="section-title" onclick="toggleSection('desayunos')">Desayunos/Cenas</div>
+        <div id="desayunos" class="section-content">
             <div class="producto" data-id="1">
                 <h3>Omelette Supremo</h3>
                 <p>Q75.00</p>
@@ -145,9 +150,8 @@
             </div>
         </div>
 
-        <!-- Sección de Almuerzos -->
-        <div class="section">
-            <div class="section-title">Almuerzos</div>
+        <div class="section-title" onclick="toggleSection('almuerzos')">Almuerzos</div>
+        <div id="almuerzos" class="section-content">
             <div class="producto" data-id="5">
                 <h3>Desayuno de la Casa</h3>
                 <p>Q50.00</p>
@@ -160,9 +164,8 @@
             </div>
         </div>
 
-        <!-- Sección de Bebidas -->
-        <div class="section">
-            <div class="section-title">Bebidas</div>
+        <div class="section-title" onclick="toggleSection('bebidas')">Bebidas</div>
+        <div id="bebidas" class="section-content">
             <div class="producto" data-id="37">
                 <h3>Pichel de Horchata</h3>
                 <p>Q60.00</p>
@@ -180,9 +183,8 @@
             </div>
         </div>
 
-        <!-- Sección de Postres -->
-        <div class="section">
-            <div class="section-title">Postres</div>
+        <div class="section-title" onclick="toggleSection('postres')">Postres</div>
+        <div id="postres" class="section-content">
             <div class="producto" data-id="33">
                 <h3>Crepas</h3>
                 <p>Q50.00</p>
@@ -206,7 +208,6 @@
         <button id="confirmarPedido" onclick="confirmarPedido()">Confirmar Pedido</button>
     </section>
 
-    <!-- Nueva sección para ver todos los pedidos -->
     <section id="pedidos">
         <h2>Ver Pedidos</h2>
         <ul id="lista-pedidos">
@@ -236,6 +237,11 @@
         ];
 
         let cuentas = JSON.parse(localStorage.getItem('cuentas')) || [];
+
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            section.style.display = (section.style.display === "none" || section.style.display === "") ? "block" : "none";
+        }
 
         // Función para agregar productos al carrito
         function agregarAlCarrito(idProducto) {
@@ -313,7 +319,6 @@
                 listaPedidos.appendChild(li);
             });
         }
-
     </script>
 
 </body>
