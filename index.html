@@ -117,6 +117,8 @@
             display: none;
         }
     </style>
+    <!-- Incluimos jsPDF desde un CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
@@ -285,6 +287,12 @@
                 li.textContent = `${item.nombre} - Q${item.precio}`;
                 listaCarrito.appendChild(li);
             });
+
+            // Mostrar botón para imprimir comanda
+            const imprimirBtn = document.createElement('button');
+            imprimirBtn.textContent = 'Imprimir Comanda';
+            imprimirBtn.onclick = () => imprimirComanda(clienteNombre);
+            listaCarrito.appendChild(imprimirBtn);
         }
 
         // Función para confirmar el pedido
@@ -331,6 +339,45 @@
                 li.textContent = `${cuenta.nombre} (Fecha: ${cuenta.fecha}): ${cuenta.productos.map(p => p.nombre).join(', ')}`;
                 listaPedidos.appendChild(li);
             });
+        }
+
+        // Función para generar e imprimir la comanda en formato PDF
+        function imprimirComanda(clienteNombre) {
+            const cuenta = cuentas.find(c => c.nombre === clienteNombre);
+            if (!cuenta || cuenta.productos.length === 0) {
+                alert("El carrito está vacío.");
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4'); // Tamaño A4, orientación de página vertical
+
+            // Configuración de la página para formato de impresora térmica (58mm)
+            doc.setPageSize([58, 297]); // Ajustar el tamaño de la página a 58mm de ancho
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(10);
+            
+            let yPosition = 10; // Posición inicial de texto en el PDF
+
+            doc.text(`Pedido para: ${cuenta.nombre}`, 10, yPosition);
+            yPosition += 10;
+
+            doc.text(`Fecha: ${cuenta.fecha}`, 10, yPosition);
+            yPosition += 10;
+
+            // Agregar productos al PDF
+            cuenta.productos.forEach(item => {
+                doc.text(`${item.nombre} - Q${item.precio}`, 10, yPosition);
+                yPosition += 10;
+            });
+
+            // Calcular el total
+            let total = cuenta.productos.reduce((sum, item) => sum + item.precio, 0);
+            doc.text(`Total: Q${total.toFixed(2)}`, 10, yPosition);
+
+            // Guardar y descargar el archivo PDF
+            doc.save(`${clienteNombre}_comanda.pdf`);
         }
     </script>
 
