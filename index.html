@@ -31,14 +31,19 @@
         /* Contenedor del video */
         .video-container {
             position: relative;
-            width: 60%; /* Reduce el ancho del video al 60% */
+            width: 100%; /* El video ocupará el 100% del ancho disponible */
             margin: 40px auto; /* Centra el video con un poco de espacio */
-            height: 500px; /* Aumenta la altura para hacer el video más alto */
+            height: 0;
+            padding-bottom: 56.25%; /* Mantiene la relación de aspecto 16:9 */
+            background-color: #000; /* Fondo negro para el contenedor */
         }
 
         .video-container video {
-            width: 100%; /* El video ocupará el 100% del ancho disponible */
-            height: 100%; /* La altura es ajustada al 100% */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%; /* El video ocupará el 100% del contenedor */
+            height: 100%; /* Mantiene la altura ajustada */
             object-fit: cover; /* Asegura que el video cubra todo el área del contenedor sin deformarse */
         }
 
@@ -162,7 +167,7 @@
             En Auto Rentas Montana, nos especializamos en ofrecer vehículos de alta calidad para todas tus necesidades de transporte. Desde autos compactos ideales para tu día a día, hasta vehículos de lujo para una experiencia exclusiva. Nuestra flota está cuidadosamente seleccionada para brindarte seguridad, comodidad y confianza en cada kilómetro que recorras.
         </p>
         <p class="description">
-            Ubicados en el corazón de Poptún, Petén. Nuestro objetivo es que cada cliente disfrute del viaje, sin preocupaciones. Además, ofrecemos un servicio al cliente excepcional, con atención personalizada para garantizar que tengas la mejor experiencia posible.
+            Ubicados en el corazón de Poptún, Petén, somos la opción número uno en alquiler de vehículos en la región. Nuestro objetivo es que cada cliente disfrute del viaje, sin preocupaciones. Además, ofrecemos un servicio al cliente excepcional, con atención personalizada para garantizar que tengas la mejor experiencia posible.
         </p>
 
         <!-- Botones de WhatsApp -->
